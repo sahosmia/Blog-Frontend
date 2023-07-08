@@ -1,20 +1,20 @@
 import { Link } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import useHelper from "../hook/useHelper";
 import { useEffect } from "react";
+import useHelper from "../../../../hook/useHelper";
 
 function Category() {
   const { datas, setDatas, isLoading, error, fetchData, fetchDelete } =
     useHelper();
 
   useEffect(() => {
-    fetchData("v1/categories");
+    fetchData("admin/categories");
   }, []);
 
   // Delte Method
   function handleDelete(id) {
-    fetchDelete("v1/categories/" + id);
+    fetchDelete("admin/categories/" + id);
     setDatas(datas.filter((item) => item.id !== id));
   }
 

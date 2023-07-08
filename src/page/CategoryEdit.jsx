@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useParams } from "react-router";
+import Axios from "../api/http";
 
 function CategoryUpdate() {
   const [isLoading, setIsLoading] = useState(false);
@@ -12,10 +12,9 @@ function CategoryUpdate() {
 
   const { id } = useParams();
   const getData = async (id) => {
-    const baseURL = "http://127.0.0.1:8000/api/v1/categories/" + id;
     setIsLoading(true);
     try {
-      const response = await axios.get(baseURL);
+      const response = await Axios.get("v1/categories" + id);
       setError(null);
       setIsLoading(false);
       setData(response.data.data);
@@ -37,11 +36,10 @@ function CategoryUpdate() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const baseURL = "http://127.0.0.1:8000/api/v1/categories/" + id;
     setIsLoading(true);
 
     try {
-      const response = await axios.put(baseURL, formData);
+      const response = await Axios.put("v1/categories" + id, formData);
       setError(null);
       setIsLoading(false);
       toast.success(response.data.message);

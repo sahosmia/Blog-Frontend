@@ -1,31 +1,70 @@
-import { Route, Routes } from "react-router-dom";
+import { createBrowserRouter } from "react-router-dom";
+import Login from "../module/Auth/pages/Login";
+import Register from "../module/Auth/pages/Register";
 
-import MainLayout from "../layout/MainLayout";
+import GuestLayout from "../module/Auth/layout/GuestLayout";
+import FrontLayout from "../module/Front/layout/FrontLayout";
+import AdminLayout from "../module/Admin/layout/AdminLayout";
 
+import Home from "../module/Front/pages/Home";
+import Category from "../module/Front/pages/Category";
+import Blog from "../module/Front/pages/Blog";
+
+import AdCategory from "../module/Admin/pages/category/Category";
+import AdCategoryCreate from "../module/Admin/pages/category/CategoryCreate";
+import AdCategoryEdit from "../module/Admin/pages/category/CategoryEdit";
+import NotFound from "../page/NotFound";
 // Page
-import Home from "../page/Home";
 
-import Blog from "../page/Blog";
-import BlogSingle from "../page/BlogSingle";
-import Category from "../page/Category";
-import CategoryCreate from "../page/CategoryCreate";
-import CategoryEdit from "../page/CategoryEdit";
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <FrontLayout />,
+    children: [
+      {
+        path: "",
+        element: <Home />,
+      },
+      {
+        path: "categories",
+        element: <Category />,
+      },
+      {
+        path: "blogs",
+        element: <Blog />,
+      },
+    ],
+  },
 
+  {
+    path: "/admin/",
+    element: <AdminLayout />,
+    children: [
+      { path: "categories", element: <AdCategory /> },
+      { path: "categories/create", element: <AdCategoryCreate /> },
+      { path: "categories/edit/:id", element: <AdCategoryEdit /> },
+    ],
+  },
 
-export default function router() {
-  return (
-    <Routes>
-      <Route path="/" element={<MainLayout />}>
-        <Route index element={<Home />} />
+  {
+    path: "/",
+    element: <GuestLayout />,
+    children: [
+      {
+        path: "login",
+        element: <Login />,
+      },
+      {
+        path: "register",
+        element: <Register />,
+      },
+    ],
+  },
 
-        <Route path="blogs" element={<Blog />} />
-        <Route path="blogs-single" element={<BlogSingle />} />
+  {
+    path: "*",
+    element: <NotFound />,
+  },
+]);
 
-        <Route path="categories" element={<Category />} />
-        <Route path="categories/create" element={<CategoryCreate />} />
-        <Route path="categories/edit/:id" element={<CategoryEdit />} />
-
-      </Route>
-    </Routes>
-  );
-}
+export default router;

@@ -1,7 +1,7 @@
-import React, { useState } from "react";
-import { Link, NavLink, useLocation } from "react-router-dom";
-import { useAuthContext } from "../context/AuthContext";
-import Axios from "../api/http";
+import { useState } from "react";
+import { NavLink } from "react-router-dom";
+import Axios from "../../../api/http";
+import { useAuthContext } from "../../../context/AuthContext";
 
 function Header() {
   const { token, setToken, setUser } = useAuthContext();
@@ -148,7 +148,6 @@ function Header() {
                 <NavLink
                   className="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium"
                   to="/categories"
-                 
                 >
                   Category
                 </NavLink>
@@ -156,7 +155,6 @@ function Header() {
                 <NavLink
                   className="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium"
                   to="/other"
-              
                 >
                   Other
                 </NavLink>

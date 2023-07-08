@@ -1,29 +1,27 @@
-import React, { useState } from "react";
-import { Link, NavLink, useLocation } from "react-router-dom";
-import { useAuthContext } from "../context/AuthContext";
-import Axios from "../api/http";
+import { useState } from "react";
+import { Link, NavLink, Navigate } from "react-router-dom";
+import Axios from "../../../api/http";
+import { useAuthContext } from "../../../context/AuthContext";
+
+
 
 function Header() {
   const { token, setToken, setUser } = useAuthContext();
   const [isBoolean, setIsBoolean] = useState(false);
   const [isMenu, setIsMenu] = useState(false);
-
-  // const location = useLocation();
-
-  // const isNavLinkActive = (match, location) => {
-  //   if (match) {
-  //     console.log("NavLink is active:", location.pathname);
-  //   }
-  //   return match;
-  // };
-
+  
+  const navigation = [
+  { name: "Home", to: "/" },
+  { name: "Category", to: "/categories" },
+  { name: "Blog", to: "/blogs" },
+  ];
+  
   // logout
   const logout = (e) => {
     e.preventDefault();
 
     try {
       Axios.post("logout").then(() => {
-        // console.log(localStorage.getItem("TOKEN"));
         setUser({});
         setToken(null);
       });
@@ -31,6 +29,10 @@ function Header() {
       console.log(error);
     }
   };
+
+  function classNames(...classes) {
+  return classes.filter(Boolean).join(" ");
+}
 
   return (
     //       {token == null && (
@@ -52,13 +54,6 @@ function Header() {
     //       {/* )} */}
     //     </ul>
 
-    //     <div className="flex lg:hidden">
-    //       <span>
-    //         <i className="fa-solid fa-bars"></i>
-    //       </span>
-    //     </div>
-    //   </nav>
-    // </header>
     <nav className="bg-gray-800">
       <div className="container px-2 sm:px-6 lg:px-8">
         <div className="relative flex h-16 items-center justify-between">
@@ -75,10 +70,6 @@ function Header() {
             >
               <span className="sr-only">Open main menu</span>
 
-              {/* Icon when menu is closed.
-
-            Menu open: "hidden", Menu closed: "block"
-          */}
               <svg
                 className={`${!isMenu ? "block" : "hidden"} h-6 w-6`}
                 fill="none"
@@ -93,10 +84,6 @@ function Header() {
                   d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
                 />
               </svg>
-
-              {/* Icon when menu is open.
-
-            Menu open: "block", Menu closed: "hidden" */}
 
               <svg
                 className={`${!isMenu ? "hidden" : "block"} h-6 w-6`}
@@ -129,37 +116,24 @@ function Header() {
             </div>
             <div className="hidden sm:ml-6 sm:block">
               <div className="flex space-x-4">
-                {/* Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" */}
+                {navigation.map((item) => (
+                    <NavLink
+                      key={item.name}
+                      to={item.to}
+                      className={({ isActive }) =>
+                        classNames(
+                          isActive
+                            ? "bg-gray-900 text-white"
+                            : "text-gray-300 hover:bg-gray-700 hover:text-white",
+                          "block px-3 py-2 rounded-md text-base font-medium"
+                        )
+                      }
+                    >
+                      {item.name}
+                    </NavLink>
+                  ))}
 
-                <NavLink
-                  className="bg-gray-900 text-white rounded-md px-3 py-2 text-sm font-medium"
-                  to="/"
-                >
-                  Home
-                </NavLink>
-
-                <NavLink
-                  className="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium"
-                  to="/blogs"
-                >
-                  Blog
-                </NavLink>
-
-                <NavLink
-                  className="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium"
-                  to="/categories"
-                 
-                >
-                  Category
-                </NavLink>
-
-                <NavLink
-                  className="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium"
-                  to="/other"
-              
-                >
-                  Other
-                </NavLink>
+                
               </div>
             </div>
           </div>
@@ -215,33 +189,42 @@ function Header() {
                 tabIndex="-1"
               >
                 {/* Active: "bg-gray-100", Not Active: ""  */}
-                <a
-                  href="#"
-                  className="block px-4 py-2 text-sm text-gray-700"
-                  role="menuitem"
-                  tabIndex="-1"
-                  id="user-menu-item-0"
-                >
-                  Your Profile
-                </a>
-                <a
-                  href="#"
-                  className="block px-4 py-2 text-sm text-gray-700"
-                  role="menuitem"
-                  tabIndex="-1"
-                  id="user-menu-item-1"
-                >
-                  Settings
-                </a>
-                <a
-                  href="#"
-                  className="block px-4 py-2 text-sm text-gray-700"
-                  role="menuitem"
-                  tabIndex="-1"
-                  id="user-menu-item-2"
-                >
-                  Sign out
-                </a>
+                {token == null && (
+                  <Link
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    role="menuitem"
+                    tabIndex="-1"
+                    id="user-menu-item-0"
+                    to="login"
+                  >
+                    Login
+                  </Link>
+                )}
+
+                {token == null && (
+                  <Link
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    role="menuitem"
+                    tabIndex="-1"
+                    id="user-menu-item-0"
+                    to="register"
+                  >
+                    Register
+                  </Link>
+                )}
+
+                {token != null && (
+                  <a
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    role="menuitem"
+                    tabIndex="-1"
+                    id="user-menu-item-0"
+                    href="#"
+                    onClick={logout}
+                  >
+                    Log Out
+                  </a>
+                )}
               </div>
             </div>
           </div>

@@ -1,33 +1,41 @@
-import React, { useState } from "react";
-import { ToastContainer, toast } from "react-toastify";
+import { useState } from "react";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import Axios from "../api/http";
+import { useAuthContext } from "../../../context/AuthContext";
+import Axios from "../../../api/http";
 
-function CategoryCreate() {
+function Login() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
   const [formData, setFormData] = useState({
-    title: "",
-    description: "",
+    password: "",
+    email: "",
   });
+
+  const { token, setToken, user, setUser } = useAuthContext();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
 
     try {
-      const response = await Axios.post("v1/categories", formData);
+      const response = await Axios.post("login", formData);
       setError(null);
       setIsLoading(false);
-      setFormData({ title: "", description: "" });
-      toast.success(response.data.message);
+      setFormData({
+        password: "",
+        email: "",
+      });
+      setToken(response.data.data.token);
+      setUser(response.data.data.user);
+      // localStorage.setItem("TOKEN", response.data.data.token);
+      console.log(response);
     } catch (error) {
-      // if (error.response.status == 404) {
-      //   toast.error(error.response.statusText);
-      // }
       setError(error.response.data.errors);
       setIsLoading(false);
+
+      console.log(error);
     }
   };
 
@@ -40,54 +48,54 @@ function CategoryCreate() {
             className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"
           >
             {isLoading && <h1>loading....</h1>}
+
             <div className="mb-4">
               <label
                 className="block text-gray-700 text-sm font-bold mb-2"
-                htmlFor="title"
+                htmlFor="email"
               >
-                Title
+                Email
               </label>
               <input
                 className={`shadow appearance-none border  rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline ${
-                  error && error.title && "border-red-500"
+                  error && error.name && "border-red-500"
                 }`}
-                id="title"
+                id="email"
                 type="text"
-                placeholder="Title"
-                value={formData.title}
+                placeholder="Email"
+                value={formData.email}
                 onChange={(e) =>
-                  setFormData({ ...formData, title: e.target.value })
+                  setFormData({ ...formData, email: e.target.value })
                 }
               />
-              {error && error.title && (
-                <p className="text-red-500 text-xs italic">{error.title}</p>
+              {error && error.email && (
+                <p className="text-red-500 text-xs italic">{error.email}</p>
               )}
             </div>
-            <div className="mb-6">
+            <div className="mb-4">
               <label
                 className="block text-gray-700 text-sm font-bold mb-2"
-                htmlFor="description"
+                htmlFor="password"
               >
-                Description
+                Password
               </label>
-              <textarea
+              <input
                 className={`shadow appearance-none border  rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline ${
-                  error && error.description && "border-red-500"
+                  error && error.password && "border-red-500"
                 }`}
-                id="description"
-                type="description"
-                rows="5"
-                value={formData.description}
+                id="password"
+                type="text"
+                placeholder="Password"
+                value={formData.password}
                 onChange={(e) =>
-                  setFormData({ ...formData, description: e.target.value })
+                  setFormData({ ...formData, password: e.target.value })
                 }
-              ></textarea>
-              {error && error.description && (
-                <p className="text-red-500 text-xs italic">
-                  {error.description}
-                </p>
+              />
+              {error && error.password && (
+                <p className="text-red-500 text-xs italic">{error.password}</p>
               )}
             </div>
+
             <div className="flex items-center justify-between">
               <button
                 className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
@@ -104,4 +112,4 @@ function CategoryCreate() {
   );
 }
 
-export default CategoryCreate;
+export default Login;

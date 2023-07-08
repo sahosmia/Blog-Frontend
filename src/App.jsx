@@ -1,13 +1,16 @@
-import { BrowserRouter } from "react-router-dom";
-import CustomRouter from "./route/router";
+import { RouterProvider } from "react-router-dom";
+
+import { AuthContextProvider } from "./context/AuthContext";
+
+import router from "./route/router";
 
 function App() {
-
   return (
     <>
-      <BrowserRouter>
-        <CustomRouter />
-      </BrowserRouter>
+  
+      <AuthContextProvider>
+        <RouterProvider router={router} />
+      </AuthContextProvider>
     </>
   );
 }
